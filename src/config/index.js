@@ -1,0 +1,1 @@
+// export { TypeOrm } from require('./typeorm.config');
