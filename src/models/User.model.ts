@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert, ManyToOne, JoinColumn } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { Role } from "./role.model";
-@Entity()
+@Entity({ name: 'user'})
 export class User {
   @PrimaryGeneratedColumn("uuid")
   id: string;
@@ -18,7 +18,7 @@ export class User {
   @Column()
   password: string;
 
-  @Column()
+  @Column({ nullable: true})
   schemaName: string;
 
   @ManyToOne(() => Role, { eager: true })

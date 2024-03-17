@@ -22,9 +22,8 @@ export class AuthController {
     const user = await this.userService.getUserByEmail(email);
     await this.queryRunner.connect();
     try {
-      await this.queryRunner.query(`SET search_path TO ${user.schemaName}`);
+      // await this.queryRunner.query(`SET search_path TO ${user.schemaName}`);
     } catch (error) {
-        console.log(error)
       throw error;
     }
     if (!user) {

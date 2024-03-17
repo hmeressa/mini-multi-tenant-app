@@ -1,7 +1,7 @@
 // permission.entity.ts
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity()
+@Entity({ name: 'permission'})
 export class Permission {
   @PrimaryGeneratedColumn("uuid")
   id: string;

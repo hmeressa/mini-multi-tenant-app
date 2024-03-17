@@ -15,11 +15,11 @@ export class CompanyService {
   ) {}
 
   async findAll(): Promise<Company[]> {
-    return this.companyRepository.find();
+    return await this.companyRepository.find();
   }
 
   async findOne(id: any): Promise<Company | undefined> {
-    return this.companyRepository.findOne(id);
+    return await this.companyRepository.findOne(id);
   }
 
   async createCompany(company: Company): Promise<Company> {
@@ -27,7 +27,12 @@ export class CompanyService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
       try {
-        const result = await this.companyRepository.create({name: company.name, address: company.address });
+        const result = this.companyRepository.create({
+          name: company.name,
+          address: company.address,
+          schemaName:company.schemaName,
+          companyOwnerId: company.companyOwnerId
+        });
         await this.companyRepository.save(result);
         await this.createTable.createSchema(company.name);
         await this.createTable.createRoleTable();
@@ -49,7 +54,7 @@ export class CompanyService {
     anyData: Partial<Company>
   ): Promise<Company | undefined> {
     await this.companyRepository.update(id, anyData);
-    return this.findOne(id);
+    return await this.findOne(id);
   }
 
   async remove(id: number): Promise<void> {
