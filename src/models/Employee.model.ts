@@ -2,9 +2,9 @@
 
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({ name: 'employee'})
+@Entity({ name: "employee" })
 export class Employee {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column()
@@ -18,6 +18,9 @@ export class Employee {
 
   @Column()
   password: string;
+
+  @Column()
+  schemaName: string;
 
   @Column({ default: () => "CURRENT_TIMESTAMP" })
   createdAt: Date;

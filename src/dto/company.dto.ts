@@ -1,5 +1,5 @@
-// employee.dto.ts
-import { IsNotEmpty, IsString, IsEmail, MinLength, IsOptional } from "class-validator";
+// company.dto.ts
+import { IsNotEmpty, IsString, IsOptional } from "class-validator";
 import { User } from "../models";
 
 export class CompanyDto {

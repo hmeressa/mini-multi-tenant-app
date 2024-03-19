@@ -6,10 +6,14 @@ import {
   Delete,
   Param,
   Body,
+  Req,
+  NotFoundException,
 } from "@nestjs/common";
 import { CompanyService } from "../services";
 import { Company } from "../models";
 import { CompanyDto } from "../dto";
+import { Request } from "express";
+
 
 @Controller("companies")
 export class CompanyController {
@@ -24,10 +28,16 @@ export class CompanyController {
   async findOne(@Param("id") id: string): Promise<Company> {
     return this.companyService.findOne(id);
   }
-
-  @Post()
-  async createCompany(@Body() companyDto: CompanyDto): Promise<Company> {
-    return this.companyService.createCompany(companyDto);
+@Post()
+  async createCompany(@Body() companyDto: CompanyDto, @Req() req: Request): Promise<Company> {
+    console.log("user",req["user"]);
+  // if (req.body.id != companyDto.companyOwnerId) {
+  //   throw new NotFoundException({
+  //     message: "Not Found",
+  //     error: "Please provide correct company id"
+  //   });
+  // }
+    return await this.companyService.createCompany(companyDto);
   }
 
   @Put(":id")

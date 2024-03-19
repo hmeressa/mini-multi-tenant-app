@@ -29,11 +29,11 @@ export class EmployeeController {
 
   @Post(":id")
   async create(@Param("id") id: any, @Body() employeeDto: EmployeeDto): Promise<Employee> {
-      const company = await this.companyService.findOne(id);
+    const company = await this.companyService.findOne(id);
       if (!company) {
           throw new NotFoundException("Company Not Found");
       }
-      return await this.employeeService.create(id,employeeDto);
+      return await this.employeeService.create(employeeDto, company.schemaName);
   }
 
   @Put(":id")

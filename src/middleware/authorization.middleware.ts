@@ -22,7 +22,6 @@ export class Authorization implements NestMiddleware {
           }),
         );
       }
-            console.log("user");
 
       const user = await this.userService.findOne(verify.userId);
 
@@ -35,7 +34,7 @@ export class Authorization implements NestMiddleware {
         );
       }
 
-      req.body = user;
+      req["user"] = user;
       next();
     } catch (error) {
       return next(

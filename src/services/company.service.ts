@@ -4,6 +4,7 @@ import { Connection } from "typeorm";
 import { CompanyRepository } from "../repositories/company.repository";
 import { CreateTable } from "../tables/create.table"; // Assuming you have a service for table creation
 import { Company } from "src/models/Company.model";
+import { CompanyDto } from "src/dto";
 
 @Injectable()
 export class CompanyService {
@@ -19,31 +20,34 @@ export class CompanyService {
   }
 
   async findOne(id: any): Promise<Company | undefined> {
-    return await this.companyRepository.findOne(id);
+    return await this.companyRepository.findOne({ where: { id: id } });
   }
 
-  async createCompany(company: Company): Promise<Company> {
+  async createCompany(companyDto: CompanyDto): Promise<Company> {
     const queryRunner = await this.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
-      try {
-        const result = this.companyRepository.create({
-          name: company.name,
-          address: company.address,
-          schemaName:company.schemaName,
-          companyOwnerId: company.companyOwnerId
-        });
-        await this.companyRepository.save(result);
-        await this.createTable.createSchema(company.name);
-        await this.createTable.createRoleTable();
-        await this.createTable.createPermissionTable();
-        await this.createTable.createEmployeeTable();
-        await this.createTable.createAttendanceTable();
-        await this.createTable.createPayrollTable();
-        await this.createTable.createLeaveTable();
-        await queryRunner.commitTransaction();
-        return result;
+    try {
+      const result = this.companyRepository.create({
+        name: companyDto.name,
+        address: companyDto.address,
+        schemaName: companyDto.schemaName,
+        companyOwnerId: companyDto.companyOwnerId,
+      });
+      console.log(result);
+      
+      await this.companyRepository.save(result);
+      await this.createTable.createSchema(companyDto.name);
+      await this.createTable.createRoleTable();
+      await this.createTable.createPermissionTable();
+      await this.createTable.createEmployeeTable();
+      await this.createTable.createAttendanceTable();
+      await this.createTable.createPayrollTable();
+      await this.createTable.createLeaveTable();
+      await queryRunner.commitTransaction();
+      return result;
     } catch (err) {
+      console.log(err)
       await queryRunner.rollbackTransaction();
       throw err;
     }

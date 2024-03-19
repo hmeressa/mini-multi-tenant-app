@@ -1,75 +1,77 @@
 import { Injectable } from "@nestjs/common";
-import { Connection, QueryRunner, Table } from "typeorm";
-import { Attendance, Employee, Leave, Payroll, Permission, Role } from "../models";
+import { ColumnType, Connection, QueryRunner, Table } from "typeorm";
+import {
+  Attendance,
+  Employee,
+  Leave,
+  Payroll,
+  Permission,
+  Role,
+} from "../models";
 
 @Injectable()
 export class CreateTable {
-  private queryRunner: QueryRunner;
-
-  constructor(private readonly connection: Connection) {
-    this.queryRunner = this.connection.createQueryRunner();
-  }
-  async createSchema(schemaName: string): Promise<any> {
-    await this.queryRunner.connect();
+  constructor(private readonly connection: Connection) {}
+  async createSchema(schemaName: string): Promise<void> {
     try {
-      await this.queryRunner.createSchema(schemaName, true);
-      await this.queryRunner.query(`SET search_path TO ${schemaName}`);
+      const query = `CREATE SCHEMA IF NOT EXISTS ${schemaName}`;
+      await this.connection.query(query);
+      await this.connection.query(`SET search_path TO ${schemaName}`);
     } catch (error) {
       throw error;
     }
   }
 
-  async createEmployeeTable(): Promise<any> {
-    await this.queryRunner.connect();
+  async createTable(entity: any): Promise<void> {
     try {
-      await this.queryRunner.createTable(new Table(Employee), true);
+      const metadata = await this.connection.getMetadata(entity);
+      const tableName = metadata.tableName;
+      const columns = metadata.columns
+        .map(
+          (column) =>
+            `"${column.databaseName}" ${this.mapColumnType(column.type)}`
+        )
+        .join(", ");
+      const query = `CREATE TABLE ${tableName} (${columns})`;
+      await this.connection.query(query);
     } catch (err) {
       throw err;
     }
+  }
+
+  async createEmployeeTable(): Promise<void> {
+    await this.createTable(Employee);
   }
 
   async createRoleTable(): Promise<any> {
-    await this.queryRunner.connect();
-    try {
-      await this.queryRunner.createTable(new Table(Role), true);
-    } catch (err) {
-      throw err;
-    }
+    return await this.createTable(Role);
   }
 
-  async createPermissionTable(): Promise<any> {
-    await this.queryRunner.connect();
-    try {
-      await this.queryRunner.createTable(new Table(Permission), true);
-    } catch (err) {
-      throw err;
-    }
+  async createPermissionTable(): Promise<void> {
+    await this.createTable(Permission);
   }
 
-  async createAttendanceTable(): Promise<any> {
-    await this.queryRunner.connect();
-    try {
-      await this.queryRunner.createTable(new Table(Attendance), true);
-    } catch (err) {
-      throw err;
-    }
+  async createAttendanceTable(): Promise<void> {
+    await this.createTable(Attendance);
   }
 
-  async createPayrollTable(): Promise<any> {
-    await this.queryRunner.connect();
-    try {
-      await this.queryRunner.createTable(new Table(Payroll), true);
-    } catch (err) {
-      throw err;
-    }
+  async createPayrollTable(): Promise<void> {
+    await this.createTable(Payroll);
   }
 
-  async createLeaveTable(): Promise<any> {
-    await this.queryRunner.connect();
-    try {
-      await this.queryRunner.createTable(new Table(Leave), true);
-    } catch (err) {
-      throw err;
+  async createLeaveTable(): Promise<void> {
+    await this.createTable(Leave);
+  }
+
+  private mapColumnType(type: ColumnType): String {
+    if (type === Number) {
+      return "INTEGER";
+    } else if (type === String) {
+      return "VARCHAR(255)";
+    } else if (type === "uuid") {
+      return "uuid";
+    } else {
+      return "VARCHAR(255)";
     }
   }
 }

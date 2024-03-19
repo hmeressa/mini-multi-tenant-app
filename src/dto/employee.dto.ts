@@ -17,4 +17,8 @@ export class EmployeeDto {
   @IsNotEmpty()
   @MinLength(6)
   password: string;
+
+  @IsNotEmpty()
+  @MinLength(6)
+  schemaName: string;
 }
