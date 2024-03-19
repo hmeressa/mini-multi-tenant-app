@@ -1,6 +1,7 @@
 // employee.model.ts
 
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert } from "typeorm";
+import * as bcrypt from "bcrypt";
 
 @Entity({ name: "employee" })
 export class Employee {
@@ -27,4 +28,10 @@ export class Employee {
 
   @Column({ default: () => "CURRENT_TIMESTAMP" })
   updatedAt: Date;
+
+  @BeforeInsert()
+  async hashPasswordBeforeInsert() {
+    const saltRounds = 10;
+    this.password = await bcrypt.hash(this.password, saltRounds);
+  }
 }

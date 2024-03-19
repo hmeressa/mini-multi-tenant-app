@@ -1,3 +1,4 @@
+import { UserService } from './user.service';
 import { Connection } from 'typeorm';
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -9,7 +10,8 @@ export class EmployeeService {
   constructor(
     @InjectRepository(Employee)
     private readonly employeeRepository: EmployeeRepository,
-    private readonly connection: Connection
+    private readonly connection: Connection,
+    private readonly userService: UserService
   ) {}
 
   async findAll(): Promise<Employee[]> {
@@ -24,10 +26,14 @@ export class EmployeeService {
     return employee;
   }
 
-  async create(employeeDto: EmployeeDto, schemaName: string): Promise<Employee> {
+  async create(
+    employeeDto: EmployeeDto,
+    schemaName: string
+  ): Promise<Employee> {
     await this.connection.query(`SET search_path TO ${schemaName}`);
-    const newEmployee = await this.employeeRepository.create(employeeDto);
-    return await this.employeeRepository.save(newEmployee);
+    const employee = await this.employeeRepository.create(employeeDto);
+    await this.userService.create(employee);
+    return await this.employeeRepository.save(employee);
   }
 
   async update(id: any, employeeDto: EmployeeDto): Promise<Employee> {

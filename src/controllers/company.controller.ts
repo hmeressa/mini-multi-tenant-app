@@ -30,14 +30,14 @@ export class CompanyController {
   }
 @Post()
   async createCompany(@Body() companyDto: CompanyDto, @Req() req: Request): Promise<Company> {
-    console.log("user",req["user"]);
-  // if (req.body.id != companyDto.companyOwnerId) {
-  //   throw new NotFoundException({
-  //     message: "Not Found",
-  //     error: "Please provide correct company id"
-  //   });
-  // }
-    return await this.companyService.createCompany(companyDto);
+  if (req.body.id != companyDto.companyOwnerId) {
+    throw new NotFoundException({
+      message: "Not Found",
+      error: "Please provide correct company id"
+    });
+  }
+    const userId = req['user'].id;
+    return await this.companyService.createCompany(companyDto, userId);
   }
 
   @Put(":id")

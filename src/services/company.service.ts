@@ -5,6 +5,7 @@ import { CompanyRepository } from "../repositories/company.repository";
 import { CreateTable } from "../tables/create.table"; // Assuming you have a service for table creation
 import { Company } from "src/models/Company.model";
 import { CompanyDto } from "src/dto";
+import { UserService } from "./user.service";
 
 @Injectable()
 export class CompanyService {
@@ -12,10 +13,13 @@ export class CompanyService {
     @InjectRepository(Company)
     private readonly companyRepository: CompanyRepository,
     private readonly createTable: CreateTable,
-    private readonly connection: Connection
+    private readonly connection: Connection,
+    private readonly userService: UserService
   ) {}
 
   async findAll(): Promise<Company[]> {
+     const query = `SELECT current_schema() AS schema_name;`;
+    const result = await this.connection.query(query);
     return await this.companyRepository.find();
   }
 
@@ -23,7 +27,7 @@ export class CompanyService {
     return await this.companyRepository.findOne({ where: { id: id } });
   }
 
-  async createCompany(companyDto: CompanyDto): Promise<Company> {
+  async createCompany(companyDto: CompanyDto, userId: string): Promise<Company> {
     const queryRunner = await this.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -34,9 +38,9 @@ export class CompanyService {
         schemaName: companyDto.schemaName,
         companyOwnerId: companyDto.companyOwnerId,
       });
-      console.log(result);
       
       await this.companyRepository.save(result);
+      await this.userService.update(userId, companyDto.schemaName);
       await this.createTable.createSchema(companyDto.name);
       await this.createTable.createRoleTable();
       await this.createTable.createPermissionTable();

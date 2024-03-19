@@ -1,7 +1,10 @@
 // employee.dto.ts
-import { IsNotEmpty, IsString, IsEmail, MinLength } from "class-validator";
+import { IsNotEmpty, IsString, IsEmail, MinLength, IsOptional } from "class-validator";
 
 export class EmployeeDto {
+  @IsOptional()
+  id: string;
+
   @IsNotEmpty()
   @IsString()
   firstName: string;

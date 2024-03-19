@@ -23,12 +23,12 @@ export class UserService {
     return user;
   }
 
-  async create(userDto: UserDto): Promise<User> {
+  async create(userDto: any): Promise<any> {
     const newUser = this.userRepository.create(userDto);
     return await this.userRepository.save(newUser);
   }
 
-  async update(id: number, userDto: UserDto): Promise<User> {
+  async update(id: string, userDto: any): Promise<User> {
     const user = await this.findOne(id);
     this.userRepository.merge(user, userDto);
     return await this.userRepository.save(user);

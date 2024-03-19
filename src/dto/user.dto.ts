@@ -21,5 +21,5 @@ export class UserDto {
   password: string;
 
   @IsOptional()
-  schemaName?: string; // Making schemaName optional
+  schemaName?: string;
 }
