@@ -1,7 +1,7 @@
 // company.model.ts
 
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
-import { User } from "./User.model";
+import { User } from "./user.model";
 
 @Entity({ name: 'company'})
 export class Company {

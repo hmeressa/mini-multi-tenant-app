@@ -10,7 +10,7 @@ import {
 } from "@nestjs/common";
 import { CompanyService, EmployeeService } from "../services";
 import { EmployeeDto } from "../dto";
-import { Employee } from "../models";
+import { Employee } from "../model";
 
 @Controller("employees")
 export class EmployeeController {

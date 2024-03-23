@@ -2,7 +2,7 @@
 import { Controller, Get, Post, Body } from "@nestjs/common";
 import { PermissionService } from "../services";
 import { PermissionDto } from "../dto";
-import { Permission } from "../models";
+import { Permission } from "../model";
 
 @Controller("permissions")
 export class PermissionController {

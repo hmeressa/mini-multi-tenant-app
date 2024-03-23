@@ -9,7 +9,6 @@ import { UserService } from '../services';
 export class Authorization implements NestMiddleware {
   constructor(
     private readonly userService: UserService,
-    private readonly connection: Connection
   ) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
@@ -27,7 +26,6 @@ export class Authorization implements NestMiddleware {
       }
 
       const user = await this.userService.findOne(verify.userId);
-
       if (!user) {
         return next(
           new UnauthorizedException({
@@ -37,13 +35,12 @@ export class Authorization implements NestMiddleware {
         );
       }
       req["user"] = user;
-      await this.connection.query(`SET search_path TO ${user.schemaName}`);
       next();
     } catch (error) {
       return next(
         new UnauthorizedException({
           message: "Unauthorized",
-          error: "Please login",
+          error: "Server Error",
         })
       );
     }

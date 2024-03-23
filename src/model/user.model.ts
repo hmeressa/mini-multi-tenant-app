@@ -1,7 +1,8 @@
 import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert, ManyToOne, JoinColumn } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { Role } from "./role.model";
-@Entity({ name: 'user'})
+import { Company } from "./Company.model";
+@Entity({ name: "user" })
 export class User {
   @PrimaryGeneratedColumn("uuid")
   id: string;

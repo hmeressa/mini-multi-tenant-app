@@ -21,11 +21,6 @@ export class AuthController {
     const { email, password } = authDto;
     const user = await this.userService.getUserByEmail(email);
     await this.queryRunner.connect();
-    try {
-      // await this.queryRunner.query(`SET search_path TO ${user.schemaName}`);
-    } catch (error) {
-      throw error;
-    }
     if (!user) {
       return new NotFoundException({
         message: "Something bad happened",

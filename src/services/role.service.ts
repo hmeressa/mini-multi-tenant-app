@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { RoleRepository } from "../repositories";
 import { RoleDto } from "../dto";
-import { Role } from "src/models";
+import { Role } from "../model";
 
 @Injectable()
 export class RoleService {

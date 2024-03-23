@@ -4,10 +4,9 @@ import { CompanyService, EmployeeService, PermissionService, RoleService, UserSe
 import { CompanyRepository, EmployeeRepository, PermissionRepository, RoleRepository, UserRepository } from "./repositories";
 import { CompanyController, PermissionController, UserController, RoleController,AuthController, EmployeeController } from "./controllers";
 import { CreateTable } from "./tables";
-import { Attendance, Company, Employee, Leave, Payroll, Permission, Role, User } from "./models";
+import { Attendance, Company, Employee, Leave, Payroll, Permission, Role, User } from "./model";
 import { TypeOrmConfig } from "./config/typeorm.config";
-import { Authorization } from './middleware';
-import { pathChanger } from "./middleware/pathChanger.middleware";
+import { Authorization, pathChanger } from './middleware';
 
 @Module({
   imports: [
@@ -45,13 +44,13 @@ import { pathChanger } from "./middleware/pathChanger.middleware";
     CreateTable,
     EmployeeService,
   ],
+  exports: []
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(Authorization)
-      .exclude("/auth")
-      .forRoutes("*");
+    consumer.apply(Authorization, pathChanger).exclude("/auth").forRoutes("*");
   }
 }
+// export class AppModule{
+// }
   

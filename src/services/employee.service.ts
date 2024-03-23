@@ -3,7 +3,7 @@ import { Connection } from 'typeorm';
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { EmployeeDto } from "../dto";
-import { Employee } from "../models";
+import { Employee } from "../model";
 import { EmployeeRepository } from "../repositories";
 @Injectable()
 export class EmployeeService {
@@ -30,9 +30,8 @@ export class EmployeeService {
     employeeDto: EmployeeDto,
     schemaName: string
   ): Promise<Employee> {
-    await this.connection.query(`SET search_path TO ${schemaName}`);
     const employee = await this.employeeRepository.create(employeeDto);
-    await this.userService.create(employee);
+    // await this.userService.create(employee);
     return await this.employeeRepository.save(employee);
   }
 

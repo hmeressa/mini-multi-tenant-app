@@ -1,7 +1,7 @@
 // permission.service.ts
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Permission } from "../models";
+import { Permission } from "../model";
 import { PermissionDto } from "../dto";
 import { PermissionRepository } from "../repositories";
 

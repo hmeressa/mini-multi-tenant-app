@@ -10,7 +10,7 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { CompanyService } from "../services";
-import { Company } from "../models";
+import { Company } from "../model";
 import { CompanyDto } from "../dto";
 import { Request } from "express";
 
@@ -21,7 +21,7 @@ export class CompanyController {
 
   @Get()
   async findAll(): Promise<Company[]> {
-    return this.companyService.findAll();
+    return await this.companyService.findAll();
   }
 
   @Get(":id")
@@ -30,14 +30,14 @@ export class CompanyController {
   }
 @Post()
   async createCompany(@Body() companyDto: CompanyDto, @Req() req: Request): Promise<Company> {
-  if (req.body.id != companyDto.companyOwnerId) {
+  if (req['user'].id != companyDto.companyOwnerId) {
     throw new NotFoundException({
       message: "Not Found",
       error: "Please provide correct company id"
     });
   }
-    const userId = req['user'].id;
-    return await this.companyService.createCompany(companyDto, userId);
+  const userId = req['user'].id;
+    return await this.companyService.createCompany(companyDto);
   }
 
   @Put(":id")

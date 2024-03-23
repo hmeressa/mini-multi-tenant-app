@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Connection } from "typeorm";
 import { CompanyRepository } from "../repositories/company.repository";
 import { CreateTable } from "../tables/create.table"; // Assuming you have a service for table creation
-import { Company } from "src/models/Company.model";
+import { Company } from "../model";
 import { CompanyDto } from "src/dto";
 import { UserService } from "./user.service";
 
@@ -18,8 +18,6 @@ export class CompanyService {
   ) {}
 
   async findAll(): Promise<Company[]> {
-     const query = `SELECT current_schema() AS schema_name;`;
-    const result = await this.connection.query(query);
     return await this.companyRepository.find();
   }
 
@@ -27,7 +25,7 @@ export class CompanyService {
     return await this.companyRepository.findOne({ where: { id: id } });
   }
 
-  async createCompany(companyDto: CompanyDto, userId: string): Promise<Company> {
+  async createCompany(companyDto: CompanyDto): Promise<Company> {
     const queryRunner = await this.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -40,8 +38,8 @@ export class CompanyService {
       });
       
       await this.companyRepository.save(result);
-      await this.userService.update(userId, companyDto.schemaName);
-      await this.createTable.createSchema(companyDto.name);
+      // await this.userService.update(userId, companyDto.id);
+      await this.createTable.createSchema(companyDto.schemaName);
       await this.createTable.createRoleTable();
       await this.createTable.createPermissionTable();
       await this.createTable.createEmployeeTable();
