@@ -21,11 +21,15 @@ export class CompanyService {
     return await this.companyRepository.find();
   }
 
-  async findOne(id: any): Promise<Company | undefined> {
-    return await this.companyRepository.findOne({ where: { id: id } });
+  async findOne(id: string): Promise<Company> {
+    try {
+      return await this.companyRepository.findOne({ where: { id: id } });
+    } catch (err) {
+      console.log(err)
+    }
   }
 
-  async createCompany(companyDto: CompanyDto): Promise<Company> {
+  async createCompany(userId: String, companyDto: CompanyDto): Promise<Company> {
     const queryRunner = await this.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -38,7 +42,7 @@ export class CompanyService {
       });
       
       await this.companyRepository.save(result);
-      // await this.userService.update(userId, companyDto.id);
+      await this.userService.updateUserSchema(userId, companyDto.schemaName);
       await this.createTable.createSchema(companyDto.schemaName);
       await this.createTable.createRoleTable();
       await this.createTable.createPermissionTable();
@@ -56,14 +60,14 @@ export class CompanyService {
   }
 
   async update(
-    id: number,
+    id: string,
     anyData: Partial<Company>
-  ): Promise<Company | undefined> {
+  ): Promise<Company> {
     await this.companyRepository.update(id, anyData);
     return await this.findOne(id);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     await this.companyRepository.delete(id);
   }
 }

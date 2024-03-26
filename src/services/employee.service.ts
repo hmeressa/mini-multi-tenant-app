@@ -26,10 +26,7 @@ export class EmployeeService {
     return employee;
   }
 
-  async create(
-    employeeDto: EmployeeDto,
-    schemaName: string
-  ): Promise<Employee> {
+  async create(employeeDto: EmployeeDto): Promise<Employee> {
     const employee = await this.employeeRepository.create(employeeDto);
     // await this.userService.create(employee);
     return await this.employeeRepository.save(employee);

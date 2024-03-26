@@ -28,8 +28,8 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
-  async update(id: string, userDto: any): Promise<any> {
-    return await this.userRepository.update(id,userDto );
+  async update(id: any, userDto: UserDto): Promise<any> {
+    return await this.userRepository.update(id, userDto );
   }
 
   async remove(id: number): Promise<void> {
@@ -39,5 +39,9 @@ export class UserService {
 
     async getUserByEmail(email: any): Promise<User> {
     return await this.userRepository.findOne({where: { email: email }});
+  }
+
+  async updateUserSchema(id: any, schemaName: any) {
+    return await this.userRepository.update(id, { schemaName: schemaName });
   }
 }

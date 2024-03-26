@@ -26,7 +26,9 @@ export class CompanyController {
 
   @Get(":id")
   async findOne(@Param("id") id: string): Promise<Company> {
-    return this.companyService.findOne(id);
+    const data = await this.companyService.findOne(id);
+    console.log(data)
+    return data
   }
 @Post()
   async createCompany(@Body() companyDto: CompanyDto, @Req() req: Request): Promise<Company> {
@@ -36,8 +38,7 @@ export class CompanyController {
       error: "Please provide correct company id"
     });
   }
-  const userId = req['user'].id;
-    return await this.companyService.createCompany(companyDto);
+  return await this.companyService.createCompany(req["user"].id, companyDto);
   }
 
   @Put(":id")
@@ -45,11 +46,11 @@ export class CompanyController {
     @Param("id") id: string,
     @Body() companyData: CompanyDto
   ): Promise<Company> {
-    return this.companyService.update(+id, companyData);
+    return this.companyService.update(id, companyData);
   }
 
   @Delete(":id")
   async remove(@Param("id") id: string): Promise<void> {
-    return this.companyService.remove(+id);
+    return this.companyService.remove(id);
   }
 }

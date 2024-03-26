@@ -6,7 +6,7 @@ import { CompanyController, PermissionController, UserController, RoleController
 import { CreateTable } from "./tables";
 import { Attendance, Company, Employee, Leave, Payroll, Permission, Role, User } from "./model";
 import { TypeOrmConfig } from "./config/typeorm.config";
-import { Authorization, pathChanger } from './middleware';
+import { ActiveSchema, Authorization, PathChanger } from './middleware';
 
 @Module({
   imports: [
@@ -48,7 +48,10 @@ import { Authorization, pathChanger } from './middleware';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(Authorization, pathChanger).exclude("/auth").forRoutes("*");
+    consumer
+      .apply(Authorization, PathChanger)
+      .exclude("/auth", "/users")
+      .forRoutes("*");
   }
 }
 // export class AppModule{
